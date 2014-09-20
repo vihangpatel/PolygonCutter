@@ -20,18 +20,18 @@ $(function () {
             var segments = path.segments,
                 points = [];
             for (var i = 0 ; i < segments.length ; i++) {
-                points.push(segments[i].point.clone());
+                points.push(this.pointClone(segments[i].point));
             }
             return { segments: points, id: path.id };
         },
 
-        clonePaths : function(pathsList) {
+        clonePaths: function (pathsList) {
             var clonedPaths = [];
             for (var i = 0; i < pathsList.length ; i++) {
                 var segments = pathsList[i].segments,
                     pointsList = [];
                 for (var j = 0 ; j < segments.length ; j++) {
-                    pointsList.push(segments[j].clone());
+                    pointsList.push(this.pointClone(segments[j]));
                 }
                 clonedPaths.push({ segments: pointsList, id: pathsList[i].id });
             }
@@ -57,7 +57,7 @@ $(function () {
                         continue;
                     this.deleteElement(lstRegions, clonedList[j]);
                     lstRegions = lstRegions.concat(newRegions);
-                }           
+                }
             }
             return lstRegions;
         },
@@ -70,7 +70,7 @@ $(function () {
                 }
             }
             return from;
-        },   
+        },
 
         splitPolygon: function (line, polygon) {
             var segments = polygon.segments,
@@ -90,7 +90,7 @@ $(function () {
             var intersectionWithLine = paperPolyGon.getIntersections(line);
             paperPolyGon.remove();
             if (intersectionWithLine.length > 2) {
-                var splittedPolgons = this.intrinsicSplitter(line, paperPolyGon);                
+                var splittedPolgons = this.intrinsicSplitter(line, paperPolyGon);
                 return splittedPolgons;
             }
             for (var i = 0 ; i < segments.length ; i++) {
@@ -103,12 +103,12 @@ $(function () {
                 }
                 point = intersection[0].point;
                 if (count === 1 && !point.equals(firstPoint)) {
-                    secondPoint = point.clone();
+                    secondPoint = this.pointClone(point);
                     breakPt2 = i;
                     break;
                 }
                 if (count === 0) {
-                    firstPoint = point.clone();
+                    firstPoint = this.pointClone(point);
                     breakPt1 = i;
                     count++;
                 }
@@ -121,13 +121,13 @@ $(function () {
             var region1 = {},
                 region1Points = [];
             for (var i = 0 ; i <= breakPt1 ; i++) {
-                region1Points.push(segments[i].clone());
+                region1Points.push(this.pointClone(segments[i]));
             }
-            region1Points.push(firstPoint.clone());
-            region1Points.push(secondPoint.clone());
+            region1Points.push(this.pointClone(firstPoint));
+            region1Points.push(this.pointClone(secondPoint));
 
             for (var i = breakPt2 + 1; i < segments.length; i++) {
-                region1Points.push(segments[i].clone());
+                region1Points.push(this.pointClone(segments[i]));
             }
             region1.segments = region1Points;
             region1.id = paperPolyGon.id + 1;
@@ -135,14 +135,14 @@ $(function () {
 
             var region2 = {},
                 region2Points = [];
-            region2Points.push(firstPoint.clone());
+            region2Points.push(this.pointClone(firstPoint));
             for (var i = breakPt1 + 1; i <= breakPt2; i++) {
-                region2Points.push(segments[i]);
+                region2Points.push(this.pointClone(segments[i]));
             }
-            region2Points.push(secondPoint.clone());
+            region2Points.push(this.pointClone(secondPoint));
             region2.segments = region2Points;
             region2.id = paperPolyGon.id + 2;
-            
+
             if (region1.segments.length == 2 || region2.segments.length == 2) {
                 region1.remove();
                 region2.remove();
@@ -167,9 +167,9 @@ $(function () {
             for (var i = 0 ; i < parseInt(sortedPoints.length / 2) ; i++) {
                 var point1 = polygon.getNearestPoint(sortedPoints[i * 2]),
                     point2 = polygon.getNearestPoint(sortedPoints[i * 2 + 1]);
-					
-				point1 = GetvarOnLineUsingDistance(point1,point2,-1,0,true);
-				point2 = GetvarOnLineUsingDistance(point1,point2,-1,0,false);
+
+                point1 = GetvarOnLineUsingDistance(point1, point2, -1, 0, true);
+                point2 = GetvarOnLineUsingDistance(point1, point2, -1, 0, false);
                 var dummyLine = this.dummyLine(point1, point2);
                 var dummyGroup = new scope.Group();
                 dummyGroup.addChild(dummyLine);
@@ -191,7 +191,7 @@ $(function () {
             var refPoint = this._add(points[0], vector);
             for (var i = 0; i < points.length ; i++) {
                 var distance = refPoint.getDistance(points[i]);
-                arrayToSort[distance] = points[i].clone();
+                arrayToSort[distance] = this.pointClone(points[i]);
             }
             var keys = Object.keys(arrayToSort),
                 keysLength = keys.length,
@@ -204,6 +204,13 @@ $(function () {
                 sortedArray.push(arrayToSort[keys[i]]);
             }
             return sortedArray;
+        },
+
+        pointClone: function (point) {
+            if (point) {
+                return { x: point.x, y: point.y };
+            }
+            return point;
         },
 
         dummyLine: function (startPoint, endPoint) {
