@@ -74,7 +74,6 @@ $(function () {
 
         splitPolygon: function (line, polygon) {
             var segments = polygon.segments,
-                curves = polygon.curves,
                 scope = this.scope,
                 nextIndex,
                 point,
@@ -88,9 +87,10 @@ $(function () {
                 intersectionList = [],
                 paperPolyGon = new this.scope.Path(segments);
             paperPolyGon.closed = true;
-            if (paperPolyGon.getIntersections(line).length > 2) {
-                var splittedPolgons = this.intrinsicSplitter(line, paperPolyGon);
-                paperPolyGon.remove();
+            var intersectionWithLine = paperPolyGon.getIntersections(line);
+            paperPolyGon.remove();
+            if (intersectionWithLine.length > 2) {
+                var splittedPolgons = this.intrinsicSplitter(line, paperPolyGon);                
                 return splittedPolgons;
             }
             for (var i = 0 ; i < segments.length ; i++) {
@@ -142,8 +142,7 @@ $(function () {
             region2Points.push(secondPoint.clone());
             region2.segments = region2Points;
             region2.id = paperPolyGon.id + 2;
-
-            paperPolyGon.remove();
+            
             if (region1.segments.length == 2 || region2.segments.length == 2) {
                 region1.remove();
                 region2.remove();
@@ -153,6 +152,7 @@ $(function () {
         },
 
         intrinsicSplitter: function (line, polygon) {
+            console.log('Intrinsic before : ', this.scope.project.activeLayer.children.length);
             var intersections = line.getIntersections(polygon);
             if (intersections.length < 2) {
                 return null;
@@ -177,7 +177,9 @@ $(function () {
                 lineGroup.addChild(dummyGroup);
             }
             var splittedPolygonGroup = this.CreateRegions(lineGroup, polygon);
+            lineGroup.removeChildren();
             lineGroup.remove();
+            console.log('Intrinsic after : ', this.scope.project.activeLayer.children.length);
             return splittedPolygonGroup;
         },
 

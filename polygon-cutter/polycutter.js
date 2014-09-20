@@ -163,18 +163,19 @@ $(function () {
             handle1.onMouseDrag = function (event) {
                 this.position = event.point;
                 line.segments[0].point = event.point;
-                console.log(self.activeScope.project.activeLayer.children.length);
+                console.log('Before : ' ,self.activeScope.project.activeLayer.children.length);
                 self._generatePolys();
                 self.activeScope.view.draw();
+                console.log('after : ', self.activeScope.project.activeLayer.children.length);
             }
 
             handle2.onMouseDrag = function (event) {
                 this.position = event.point;
                 line.segments[1].point = event.point;
-
-                console.log(self.activeScope.project.activeLayer.children.length);
+                console.log('Before : ', self.activeScope.project.activeLayer.children.length);
                 self._generatePolys();
                 self.activeScope.view.draw();
+                console.log('after : ', self.activeScope.project.activeLayer.children.length);
             }
 
             line.onMouseDrag = function (event) {
@@ -187,7 +188,8 @@ $(function () {
             self.regions.removeChildren();
             self.regions.remove();
             self.regions = new self.activeScope.Group();
-            var childrenToAdd = self.polySlitter.CreateRegions(self.lines, self.fullPolygon);
+            console.log('generate poly before:', self.activeScope.project.activeLayer.children.length);
+            var childrenToAdd = self.polySlitter.CreateRegions(self.lines, self.fullPolygon);            
             for (var i = 0 ; i < childrenToAdd.length ; i++) {
                 var path = new self.activeScope.Path(),
                     points = childrenToAdd[i].segments;
@@ -197,7 +199,7 @@ $(function () {
                 path.closed = true;
                 self.regions.addChild(path);
             }
-            console.log(self.activeScope.project.activeLayer.children.length);
+            console.log('generate poly after:',self.activeScope.project.activeLayer.children.length);
             self.activeScope.view.draw();
             self._redrawRegions();
         },
