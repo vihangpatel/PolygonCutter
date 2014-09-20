@@ -1,0 +1,23 @@
+.pt {
+    position : absolute;
+    height : 20px;
+    width : 100px;
+}
+
+.holder {
+    position:relative;
+}
+
+.canvas {
+    border: 1px solid black;
+    position : absolute
+}
+
+.disableText {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
