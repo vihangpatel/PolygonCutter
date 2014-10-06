@@ -197,6 +197,10 @@ $(function () {
                     path.add(points[j]);
                 }
                 path.closed = true;
+                path.onMouseDrag = function (event) {
+                    this.position = event.point;
+                    self.mode = 2;
+                }
                 self.regions.addChild(path);
             }
             console.log('generate poly after:',self.activeScope.project.activeLayer.children.length);
